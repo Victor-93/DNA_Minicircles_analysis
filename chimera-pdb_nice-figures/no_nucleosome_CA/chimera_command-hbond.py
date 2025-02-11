@@ -8,9 +8,11 @@ import numpy as np
 # evolution of hbonds with pictures.
 # So, just tell it which frame you want to filter and it'll highlight the base-pairs that are denaturated in that frame
 
-min_val = 6#4  # Any value below this will be 0 and above 1
+min_val = 4  # Any value below this will be 0 and above 1
 
-filter_frame = 130  # Which frame to filter
+# I think it is different the frame number of hbonds than the pdbs (nc trajectory). The actual trajectory
+# has actually +x10 number of frames.
+filter_frame = 30  # Which frame to filter
 
 # Description
 
@@ -34,6 +36,8 @@ for info_dict in info_list:
     hbond_df = (hbond_df >= min_val).astype(int) #Filter
 
     hbonds = hbond_df.to_numpy()
+
+
 
     x = hbonds[:,filter_frame-1]
     nbp = len(x)

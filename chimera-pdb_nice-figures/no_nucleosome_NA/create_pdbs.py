@@ -10,7 +10,7 @@ info_list = [
     {'parm': "../../../no_nuc_Na/writhe/no_nuc_nobox.parm7", "coords": "../../../no_nuc_Na/writhe/no_nuc_Na_100ps.nc", "name": "no_nuc_Na"},
 ]
 
-filter_frame = 80  # Which frame to filter
+filter_frame = 1350  # Which frame to filter
 
 for info_dict in info_list:
     topology = info_dict['parm']

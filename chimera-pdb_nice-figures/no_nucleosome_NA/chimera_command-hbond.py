@@ -10,7 +10,7 @@ import numpy as np
 
 min_val = 4  # Any value below this will be 0 and above 1
 
-filter_frame = 80 # Which frame to filter
+filter_frame = 135 # Which frame to filter
 
 # Description
 

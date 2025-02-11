@@ -5,12 +5,12 @@ import matplotlib.pyplot as plt
 
 # Let's sort the inputs
 info_list = [
-    {'path': "../../no_nuc_CA/writhe/no_nuc/", "name": "Empty CA r1", "color": "blue"},
-    {'path': "../../no_nuc_CA_r1/writhe/no_nuc_CA_r1/", "name": "Empty CA r2", "color": "red"},
-    {'path': "../../no_nuc_Na/writhe/no_nuc_NA/", "name": "Empty NA r1", "color": "green"},
+    {'path': "../../no_nuc_CA/writhe/no_nuc/", "name": "Empty Ca r1", "color": "blue"},
+    {'path': "../../no_nuc_CA_r1/writhe/no_nuc_CA_r1/", "name": "Empty Ca r2", "color": "red"},
+    {'path': "../../no_nuc_Na/writhe/no_nuc_NA/", "name": "Empty Na r1", "color": "green"},
     {'path': "../../no_nuc_Na_r1/writhe/no_nuc_NA_r1/", "name": "Empty Na r2", "color": "yellow"},
     {'path': "../../one_nuc/writhe/one_nuc/", "name": "Mononuc Na", "color": "purple"},
-    {'path': "../../two_nuc_CA/writhe/two_nuc/", "name": "Dinuc CA", "color": "black"},
+    {'path': "../../two_nuc_CA/writhe/two_nuc/", "name": "Dinuc Ca", "color": "black"},
     {'path': "../../two_nuc_Na/writhe/two_nuc_Na/", "name": "Dinuc Na", "color": "orange"}
 ]
 
