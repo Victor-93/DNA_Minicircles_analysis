@@ -66,6 +66,10 @@ paths = [
     # 'data/one_nuc-'
 ]
 
+lengths = [1500, 1750]
+
+showlabels = False # Indicate if you want to print labels
+
 title = 'DNA Crossings'
 
 infile = 'color_op1.txt'
@@ -103,7 +107,7 @@ width = 6.5
 height = 3.5
 
 tick_s = 12
-label_s = 16
+label_s = 14#16
 title_s = 18
 legend_s = 12
 subtitle_s = 14
@@ -125,15 +129,17 @@ nuc_color = 'silver'
 
 # Initialise
 cross_matrix = np.loadtxt(paths[1] + infile)  # Careful, load the biggest one
-cross_matrix = np.zeros_like(cross_matrix, dtype=int)
+cross_matrix = np.zeros_like(cross_matrix[:,:lengths[1]], dtype=int)
 
-for path in paths:
+for i, path in enumerate(paths):
     icross = np.loadtxt(path + infile)
     a, b = np.shape(icross)
-    print(a, b)
-    cross_matrix[:, :b] = cross_matrix[:, :b] + icross[:, :b]
+    l = lengths[i]
+    print(a, b,l)
+    cross_matrix[:, :l] = cross_matrix[:, :l] + icross[:, :l]
 
-fig.suptitle(title, fontsize=title_s)
+if showlabels:
+    fig.suptitle(title, fontsize=title_s)
 
 hbond_matrix = cross_matrix
 # Rearrange rows
@@ -154,6 +160,7 @@ for k in range(len(tick_labels)):
     midpoint = (start + end) / 2 - 3
     alpha = alpha0
     color = colors[k]
+
     # Draw region label
     ax.text(-0.5, midpoint, label,  # -0.5 positions the label outside the heatmap
             ha="right", va="center", rotation=90, fontsize=tick_s)
@@ -179,9 +186,11 @@ for k in range(len(tick_labels)):
 # -----------------------------------------------------------
 
 # Call the function to add labels
-labels = ["Empty minicircle Ca r1", "Empty minicircle Ca r2"]
+labels = [r"Naked eccDNA Ca$^{2+}$ (r1)", r"Naked eccDNA Ca$^{2+}$ (r2)"]
 colors = ["red", "blue"]
-add_custom_labels(ax, labels, colors, fontsize=legend_s)
+
+if showlabels:
+    add_custom_labels(ax, labels, colors, fontsize=legend_s)
 
 
 # SORT TICKS
@@ -191,11 +200,14 @@ xtick_labels = np.arange(0, time / 10 + 1, 25, dtype=int)
 axs.set_xticks(xticks)
 axs.set_xticklabels(xtick_labels, fontsize=tick_s)
 axs.set_xlabel('Time (ns)', fontsize=label_s)
-axs.set_xlim(0, 2103)
+#axs.set_ylabel('Position within eccDNA', fontsize=label_s)
+axs.text(-.07, -.10, 'Position within eccDNA', ha="left", va="bottom",
+        transform=axs.transAxes, fontsize=label_s, rotation=90)
+axs.set_xlim(0, 1750)#2103)
 axs.grid(True, alpha=0.5)
 axs.tick_params(labelleft=False)
 
-fig.savefig(outfile + '.pdf')
-fig.savefig(outfile + '.png')
+#fig.savefig(outfile + '.pdf')
+fig.savefig(outfile + '.png',dpi=600)
 
 plt.show()

@@ -21,6 +21,7 @@ repaired_colour = 'gray'
 not_repaired_colour = 'yellow'
 
 outfile = "hbond_lifetime_repairs"
+showlabels = True # Indicate if you want to print labels
 
 # Load sequence
 # ----------------------------------------------------------------------------------
@@ -87,13 +88,13 @@ fig, axs = plt.subplots(2, figsize=(width, 2*height), tight_layout=True)
 
 # List of dicts with info
 info_list = [
-    {'name':"no_nuc_CA", "title":"No Nucleosome Ca"},
-    {'name': "no_nuc_CA_r1", "title": "No Nucleosome Ca (r1)"},
-    {'name': "no_nuc_Na", "title": "No Nucleosome Na"},
-    {'name': "no_nuc_Na_r1", "title": "No Nucleosome Na (r1)"},
-    {'name': "one_nuc_Na", "title": "One Nucleosome Ca"},
-    {'name': "two_nuc_CA", "title": "Two Nucleosomes Ca"},
-    {'name': "two_nuc_Na", "title": "Two Nucleosomes Na"}
+    {'name':"no_nuc_CA", "title":"No Nucleosome Ca", 'length':1500},
+    {'name': "no_nuc_CA_r1", "title": "No Nucleosome Ca (r1)", 'length':1750},
+    {'name': "no_nuc_Na", "title": "No Nucleosome Na", 'length':1500},
+    {'name': "no_nuc_Na_r1", "title": "No Nucleosome Na (r1)", 'length':1750},
+    {'name': "one_nuc_Na", "title": "One Nucleosome Ca", 'length':1000},
+    {'name': "two_nuc_CA", "title": "Two Nucleosomes Ca", 'length':1000},
+    {'name': "two_nuc_Na", "title": "Two Nucleosomes Na", 'length':1000}
 ]
 
 all_run_lengths = []
@@ -109,9 +110,13 @@ GC_not_repaired = []
 for i, info_dict in enumerate(info_list):
     title = info_dict['title']
     name = info_dict['name']
+    l = info_dict['length']
 
     # Let's load the hbonds dfs
-    hbond_df = pd.read_csv("../high-res_hbonds_{}.csv".format(name))
+    hbond_df = pd.read_csv("../high-res_hbonds_{}.csv".format(name),index_col=0)
+
+    # Filter columns: keep only those with names <= l -> Column names are the frames
+    hbond_df = hbond_df.loc[:, hbond_df.columns.astype(float) <= l]
     hbond_df = (hbond_df >= min_val).astype(int)
 
     for s, row in enumerate(hbond_df.values):
@@ -121,8 +126,8 @@ for i, info_dict in enumerate(info_list):
             repaired, not_repaired = calculate_run_repairs(row)
             AT_repaired.extend(repaired)
             AT_not_repaired.extend(not_repaired)
-            if 586 in repaired:
-                print(name)
+            # if 508 in repaired:
+            #    print(name)
         else:
             GC_runs.extend(calculate_run_lengths(row))
             repaired, not_repaired = calculate_run_repairs(row)
@@ -174,16 +179,18 @@ print("All GC not repaires ", len(GC_not_repaired))
 #ax.hist(all_not_repaired, bins=100, align='left', color='red', edgecolor='black', range=(1, 101), alpha=0.7, label='Not Repaired')
 #ax.hist(all_not_repaired, bins=100, align='left', color='blue', edgecolor='black',range=(1,101))
 
+#Titles
+if showlabels:
+    axs[0].set_title('AT Base-Pairs', fontsize=title_s)
+    axs[1].set_title('GC Base-Pairs', fontsize=title_s)
 
 #AT
 ax = axs[0]
-ax.set_title('AT Base-Pairs', fontsize=title_s)
 ax.hist(AT_repaired, bins=100, align='left', color=repaired_colour, edgecolor='black',range=(1,101), label='Repaired')
 ax.hist(AT_not_repaired, bins=100, align='left', color=not_repaired_colour, edgecolor='black', range=(1, 101), alpha=0.7, label='Not Repaired')
 
 #AT
 ax = axs[1]
-ax.set_title('GC Base-Pairs', fontsize=title_s)
 ax.hist(GC_repaired, bins=100, align='left', color=repaired_colour, edgecolor='black',range=(1,101), label='Repaired')
 ax.hist(GC_not_repaired, bins=100, align='left', color=not_repaired_colour, edgecolor='black', range=(1, 101), alpha=0.7, label='Not Repaired')
 
@@ -191,7 +198,8 @@ ax.hist(GC_not_repaired, bins=100, align='left', color=not_repaired_colour, edge
 # -----------------------------------------------------------
 xticks = np.arange(0, 101, 10, dtype=int)
 yticks = np.arange(0, 16, 3, dtype=int)
-axs[0].legend(loc='best', fontsize=legend_s)
+if showlabels:
+    axs[0].legend(loc='best', fontsize=legend_s)
 for ax in [axs[0], axs[1]]:#, axs[2]]:
     ax.set_xticks(xticks)
     ax.set_yticks(yticks)
@@ -199,8 +207,8 @@ for ax in [axs[0], axs[1]]:#, axs[2]]:
     ax.set_ylabel('Counts', fontsize=label_s)
     ax.grid(True)
 
-plt.savefig(outfile+".pdf")
-plt.savefig(outfile+".png")
+#plt.savefig(outfile+".eps")
+plt.savefig(outfile+".png",dpi=600)
 plt.show()
 
 
