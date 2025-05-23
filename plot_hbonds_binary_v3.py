@@ -170,12 +170,12 @@ for i, info_dict in enumerate(info_list):
     ax.grid(True, alpha=0.5)
 
 
-if enhance_res:
-    plt.savefig("hbonds_binary_e3.pdf")
-    plt.savefig("hbonds_binary_e3.png")
-else:
-    plt.savefig("hbonds_binary3.pdf")
-    plt.savefig("hbonds_binary3.png")
+#if enhance_res:
+#    plt.savefig("hbonds_binary_e3.pdf")
+#    plt.savefig("hbonds_binary_e3.png")
+#else:
+#    plt.savefig("hbonds_binary3.pdf")#
+#    plt.savefig("hbonds_binary3.png")
 plt.show()
 
 

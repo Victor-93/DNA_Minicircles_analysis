@@ -5,17 +5,20 @@ import matplotlib.pyplot as plt
 
 # Let's sort the inputs
 info_list = [
-    {'path': "../../no_nuc_CA/writhe/no_nuc/", "name": "Empty Ca r1", "color": "blue"},
-    {'path': "../../no_nuc_CA_r1/writhe/no_nuc_CA_r1/", "name": "Empty Ca r2", "color": "red"},
-    {'path': "../../no_nuc_Na/writhe/no_nuc_NA/", "name": "Empty Na r1", "color": "green"},
-    {'path': "../../no_nuc_Na_r1/writhe/no_nuc_NA_r1/", "name": "Empty Na r2", "color": "yellow"},
-    {'path': "../../one_nuc/writhe/one_nuc/", "name": "Mononuc Na", "color": "purple"},
-    {'path': "../../two_nuc_CA/writhe/two_nuc/", "name": "Dinuc Ca", "color": "black"},
-    {'path': "../../two_nuc_Na/writhe/two_nuc_Na/", "name": "Dinuc Na", "color": "orange"}
+    {'path': "../../no_nuc_CA/writhe/no_nuc/", "name": r"Naked Ca$^{2+}$ (r1)", "color": "blue", 'length':150},
+    {'path': "../../no_nuc_CA_r1/writhe/no_nuc_CA_r1/", "name": r"Naked Ca$^{2+}$ (r2)", "color": "red", 'length':175},
+    {'path': "../../no_nuc_Na/writhe/no_nuc_NA/", "name": r"Naked Na$^{+}$ (r1)", "color": "green", 'length':150},
+    {'path': "../../no_nuc_Na_r1/writhe/no_nuc_NA_r1/", "name": r"Naked Na$^{+}$ (r2)", "color": "yellow", 'length':175},
+    {'path': "../../one_nuc/writhe/one_nuc/", "name": r"Mononuc Na$^{+}$", "color": "purple", 'length':100},
+    {'path': "../../two_nuc_CA/writhe/two_nuc/", "name": r"Dinuc Ca$^{2+}$", "color": "black", 'length':100},
+    {'path': "../../two_nuc_Na/writhe/two_nuc_Na/", "name": r"Dinuc Na$^{2+}$", "color": "orange", 'length':100}
 ]
 
 B_DNA_turn = 10.5 # How many base-pairs per B-DNA turn
-t_name = "Dinuc CA"  # Name that we want to skip first measurement
+t_name = r"Dinuc Ca$^{2+}$" #"Dinuc Ca"  # Name that we want to skip first measurement
+
+showlabels = True # Indicate if you want to print labels
+
 #Figure parms
 # ----------------------------------------------------------------------------------
 width = 6.5
@@ -44,7 +47,7 @@ fig, axs = plt.subplots(1, 2, figsize=(width*2, height*1), tight_layout=True, sh
 outfile = 'Tw-Wr'
 # Let's try to plot while we collect
 # ------------------------------------------------------------------------------------------------
-fig.suptitle("DNA Topology", fontsize=title_s)
+#fig.suptitle("DNA Topology", fontsize=title_s)
 for i, info_dict in enumerate(info_list):
     color = info_dict['color']
     label = info_dict['name']
@@ -54,6 +57,7 @@ for i, info_dict in enumerate(info_list):
     writhe_data = np.loadtxt(writhe_file)
     nbp=twist_data.shape[1]  # Number of base-pairs
     n = twist_data.shape[0]
+    l = info_dict['length']
 
     time  = np.arange(n)/10
 
@@ -73,8 +77,10 @@ for i, info_dict in enumerate(info_list):
         time =time[1:]
 
     # Let's plot
-    axs[0].plot(time,total_twist, color=color, label=label)
-    axs[1].plot(time,writhe, color=color, label=label)
+    #axs[0].plot(time,total_twist, color=color, label=label)
+    #axs[1].plot(time,writhe, color=color, label=label)
+    axs[0].plot(time[0:l*10],total_twist[0:l*10], color=color, label=label)
+    axs[1].plot(time[0:l*10],writhe[0:l*10], color=color, label=label)
 
     # Collect measurements for overalls
     dLK_array.append(dLk[:1000])
@@ -87,8 +93,9 @@ axs[1].set_xlabel('Time (ns)', fontsize=label_s)
 
 axs[0].set_ylabel('Twist', fontsize=label_s)
 axs[1].set_ylabel('Writhe', fontsize=label_s)
-axs[0].legend(loc='best',fontsize=legend_s)
-plt.savefig(outfile+".pdf")
+if showlabels:
+    axs[0].legend(loc='best',fontsize=legend_s)
+plt.savefig(outfile+".eps")
 plt.savefig(outfile+".png")
 plt.show()
 
@@ -108,7 +115,7 @@ fig, axs = plt.subplots(1, 2, figsize=(width*2, height*1), tight_layout=True, sh
 outfile = 'dLK-sigma'
 # Let's try to plot while we collect
 # ------------------------------------------------------------------------------------------------
-fig.suptitle("DNA Topology", fontsize=title_s)
+#fig.suptitle("DNA Topology", fontsize=title_s)
 for i, info_dict in enumerate(info_list):
     color = info_dict['color']
     label = info_dict['name']
@@ -118,6 +125,7 @@ for i, info_dict in enumerate(info_list):
     writhe_data = np.loadtxt(writhe_file)
     nbp=twist_data.shape[1]  # Number of base-pairs
     n = twist_data.shape[0]
+    l = info_dict['length']
 
     time  = np.arange(n)/10
 
@@ -137,8 +145,10 @@ for i, info_dict in enumerate(info_list):
         time =time[1:]
 
     # Let's plot
-    axs[0].plot(time,dLk, color=color, label=label)
-    axs[1].plot(time,superhelical, color=color, label=label)
+    axs[0].plot(time[0:l*10],dLk[0:l*10], color=color, label=label)
+    axs[1].plot(time[0:l*10],superhelical[0:l*10], color=color, label=label)
+    #axs[0].plot(time,dLk, color=color, label=label)
+    #axs[1].plot(time,superhelical, color=color, label=label)
 
 axs[0].grid(True, alpha=0.2)
 axs[1].grid(True, alpha=0.2)
@@ -146,8 +156,9 @@ axs[0].set_xlabel('Time (ns)', fontsize=label_s)
 axs[1].set_xlabel('Time (ns)', fontsize=label_s)
 
 axs[0].set_ylabel(r'$\Delta Lk$', fontsize=label_s)
-axs[1].set_ylabel('Superhelical density', fontsize=label_s)
-axs[0].legend(loc='best',fontsize=legend_s)
-plt.savefig(outfile+".pdf")
+axs[1].set_ylabel('Superhelical Density', fontsize=label_s)
+if showlabels:
+    axs[0].legend(loc='best',fontsize=legend_s)
+plt.savefig(outfile+".eps")
 plt.savefig(outfile+".png")
 plt.show()

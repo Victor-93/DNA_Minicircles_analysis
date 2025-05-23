@@ -5,13 +5,13 @@ from MDAnalysis.analysis import distances
 
 # Let's sort the inputs
 info_list = [
-#    {'parm': "../no_nuc_CA/writhe/no_nuc_nobox.parm7", "coords": "../no_nuc_CA/writhe/no_nuc_100ps.nc", "name": "no_nuc_CA"},
-#    {'parm': "../no_nuc_CA_r1/writhe/no_nuc_nobox.parm7", "coords": "../no_nuc_CA_r1/writhe/nonuc_CA_r1_100ps.nc", "name": "no_nuc_CA_r1"},
-#    {'parm': "../no_nuc_Na/writhe/no_nuc_nobox.parm7", "coords": "../no_nuc_Na/writhe/no_nuc_Na_100ps.nc", "name": "no_nuc_Na"},
-#    {'parm': "../no_nuc_Na/writhe/no_nuc_nobox.parm7", "coords": "../no_nuc_Na_r1/writhe/no_nuc_Na_r1_100ps.nc", "name": "no_nuc_Na_r1"},
-    {'parm': "../no_nuc_Na/writhe/no_nuc_nobox.parm7", "coords": "../one_nuc/writhe/one_nuc_100ps.nc", "name": "one_nuc_Na"}
-#    {'parm': "../no_nuc_Na/writhe/no_nuc_nobox.parm7", "coords": "../two_nuc_CA/writhe/two_nuc_100ps.nc", "name": "two_nuc_CA"},
-#    {'parm': "../no_nuc_Na/writhe/no_nuc_nobox.parm7", "coords": "../two_nuc_Na/writhe/two_nuc_Na_100ps.nc", "name": "two_nuc_Na"}
+    {'parm': "../no_nuc_CA/writhe/no_nuc_nobox.parm7", "coords": "../no_nuc_CA/writhe/no_nuc_100ps.nc", "name": "no_nuc_CA"},
+    {'parm': "../no_nuc_CA_r1/writhe/no_nuc_nobox.parm7", "coords": "../no_nuc_CA_r1/writhe/nonuc_CA_r1_100ps.nc", "name": "no_nuc_CA_r1"},
+    {'parm': "../no_nuc_Na/writhe/no_nuc_nobox.parm7", "coords": "../no_nuc_Na/writhe/no_nuc_Na_100ps.nc", "name": "no_nuc_Na"},
+    {'parm': "../no_nuc_Na/writhe/no_nuc_nobox.parm7", "coords": "../no_nuc_Na_r1/writhe/no_nuc_Na_r1_100ps.nc", "name": "no_nuc_Na_r1"},
+    {'parm': "../no_nuc_Na/writhe/no_nuc_nobox.parm7", "coords": "../one_nuc/writhe/one_nuc_100ps.nc", "name": "one_nuc_Na"},
+    {'parm': "../no_nuc_Na/writhe/no_nuc_nobox.parm7", "coords": "../two_nuc_CA/writhe/two_nuc_100ps.nc", "name": "two_nuc_CA"},
+    {'parm': "../no_nuc_Na/writhe/no_nuc_nobox.parm7", "coords": "../two_nuc_Na/writhe/two_nuc_Na_100ps.nc", "name": "two_nuc_Na"}
 ]
 
 # Process
@@ -30,6 +30,7 @@ for info_dict in info_list:
     base = []
     atom = []
 
+    n_frames = coords.trajectory.n_frames
     f = open("../dna_2hbonds_2dist.txt", "r")
     for i, line in enumerate(f):
         res1 = int(line.split()[0])
@@ -37,7 +38,8 @@ for info_dict in info_list:
         res2 = line.split()[3]
         atom2 = line.split()[5]
 
-        for ts in coords.trajectory[1:1500:10]:
+        for ts in coords.trajectory[1:n_frames:10]:
+        #for ts in coords.trajectory[1:1500:10]:
             select1 = coords.select_atoms('resid {} and name {}'.format(res1, atom1))
             select2 = coords.select_atoms('resid {} and name {}'.format(res2, atom2))
             resids1, resids2, dist1 = distances.dist(select1, select2)

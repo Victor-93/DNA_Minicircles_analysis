@@ -17,6 +17,8 @@ min_val = 4  # Any value below this will be 0 and above 1
 #enhance_res = True
 enhance_res = False
 
+showlabels = False # Indicate if you want to print labels
+
 if enhance_res:
     # Convolution kernel to expand 1s to neighboring rows
     #kernel = np.array([[0, 1, 0], [0, 1, 0], [0, 1, 0]])
@@ -45,16 +47,6 @@ colors = ["red", "blue", "green", "blue"]  # Colors for the regions
 
 alpha0 = 0.2
 alpha1 = 0.7
-alpha_list = [
-    [alpha0, alpha0, alpha0, alpha0],
-    [alpha0, alpha0, alpha0, alpha0],
-    [alpha0, alpha0, alpha0, alpha0],
-    [alpha0, alpha0, alpha0, alpha0],
-    [alpha0, alpha0, alpha1, alpha0],
-#    [alpha0, alpha0, alpha1, alpha0],
-    [alpha1, alpha0, alpha1, alpha0],
-    [alpha1, alpha0, alpha1, alpha0],
-]
 
 #Figure parms
 # ----------------------------------------------------------------------------------
@@ -64,6 +56,7 @@ cmap = 'plasma'
 tick_s = 10
 label_s = 14
 title_s = 16
+outside_s = 18
 
 #yticks = np.linspace(0, nbp, 10, dtype=int)
 yticks = np.arange(0, nbp+1, 50, dtype=int)
@@ -76,13 +69,13 @@ gs = gridspec.GridSpec(4, 2, figure=fig)  # 4 rows, 2 columns
 # Create subplots for the first two rows
 ax1 = fig.add_subplot(gs[0, 0])
 ax2 = fig.add_subplot(gs[0, 1])
-ax3 = fig.add_subplot(gs[1, 0])
-ax4 = fig.add_subplot(gs[1, 1])
 
 # Create a single subplot spanning the third row
-#ax5 = fig.add_subplot(gs[2, :])  # Span both columns
-#ax5 = fig.add_subplot(gs[2, 0])  # Place it in the first column of the 3rd row
-ax5 = fig.add_axes([0.25, 0.28, 0.5, 0.2])  # [left, bottom, width, height]
+#ax3 = fig.add_axes([0.25, 0.28, 0.5, 0.2])  # [left, bottom, width, height]
+ax3 = fig.add_axes([0.25, 0.535, 0.5, 0.2])  # [left, bottom, width, height]
+
+ax4 = fig.add_subplot(gs[2, 0])
+ax5 = fig.add_subplot(gs[2, 1])
 
 # Create subplots for the fourth row
 ax6 = fig.add_subplot(gs[3, 0])
@@ -90,21 +83,36 @@ ax7 = fig.add_subplot(gs[3, 1])
 
 # List of dicts with info
 info_list = [
-    {'name':"no_nuc_CA", "title":"Empty minicircle Ca r1", "ax": ax1},
-    {'name': "no_nuc_CA_r1", "title": "Empty minicircle Ca r2", "ax": ax2},
-    {'name': "no_nuc_Na", "title": "Empty minicircle Na r1", "ax": ax3},
-    {'name': "no_nuc_Na_r1", "title": "Empty minicircle Na r2", "ax": ax4},
-    {'name': "one_nuc_Na", "title": "Mononucleosome Ca", "ax": ax5},
-    {'name': "two_nuc_CA", "title": "Dinucleosome Ca", "ax": ax6},
-    {'name': "two_nuc_Na", "title": "Dinucleosome Na", "ax": ax7},
+    {'name': "two_nuc_CA", "title": "Dinucleosome Ca$^{2+}$", "ax": ax1, 'length': 100}, #6
+    {'name': "two_nuc_Na", "title": "Dinucleosome Na$^{+}$", "ax": ax2, 'length': 100}, #7
+    {'name': "one_nuc_Na", "title": "Mononucleosome Ca$^{2+}$", "ax": ax3, 'length': 100}, #5
+    {'name': "no_nuc_CA", "title": r"Naked eccDNA Ca$^{2+}$ (r1)", "ax": ax4, 'length': 150}, #1
+    {'name': "no_nuc_CA_r1", "title": r"Naked eccDNA Ca$^{2+}$ (r2)", "ax": ax5, 'length': 175}, #2
+    {'name': "no_nuc_Na", "title": r"Naked eccDNA Na$^{+}$ (r1)", "ax": ax6, 'length': 150}, #3
+    {'name': "no_nuc_Na_r1", "title": r"Naked eccDNA Na$^{+}$ (r2)", "ax": ax7, 'length': 175}, #4
 ]
+
+alpha_list = [
+    [alpha1, alpha0, alpha1, alpha0], #6
+    [alpha1, alpha0, alpha1, alpha0], #7
+    [alpha0, alpha0, alpha1, alpha0], #5
+    [alpha0, alpha0, alpha0, alpha0], #1
+    [alpha0, alpha0, alpha0, alpha0], #2
+    [alpha0, alpha0, alpha0, alpha0], #3
+    [alpha0, alpha0, alpha0, alpha0], #4
+]
+
+outside_labels = ['a)', 'b)', 'c)', 'd)', 'e)', 'f)', 'g)']
 
 for i, info_dict in enumerate(info_list):
     ax = info_dict['ax']
     title = info_dict['title']
     name = info_dict['name']
 
-    ax.set_title(title,fontsize=title_s)
+    if showlabels:
+        ax.text(-.125, .9, outside_labels[i], ha="left", va="bottom",
+                transform=ax.transAxes, fontsize=outside_s)
+        ax.set_title(title,fontsize=title_s)
 
     # Let's load the hbonds dfs
     hbond_df = pd.read_csv("hbonds_{}.csv".format(name))
@@ -158,7 +166,9 @@ for i, info_dict in enumerate(info_list):
 
     # SORT TICKS
     # -----------------------------------------------------------
-    xticks = np.arange(0, time+1, 25, dtype=int)
+    # xticks = np.arange(0, time+1, 25, dtype=int)
+    xticks = np.arange(0, info_dict['length'] + 1, 25, dtype=int)
+    ax.set_xlim(0, info_dict['length'])
 #    ax.set_yticks([])
     #ax.set_yticks(yticks)
     #ax.set_yticklabels(yticks, fontsize=tick_s)
@@ -170,12 +180,12 @@ for i, info_dict in enumerate(info_list):
     ax.grid(True, alpha=0.5)
 
 
-#if enhance_res:
-#    plt.savefig("hbonds_paper_e.pdf")
-#    plt.savefig("hbonds_paper_e.png")
-#else:
-#    plt.savefig("hbonds_paper.pdf")
-#    plt.savefig("hbonds_paper.png")
+if enhance_res:
+    plt.savefig("hbonds_paper_e.pdf")
+    plt.savefig("hbonds_paper_e.png")
+else:
+    plt.savefig("hbonds_paper.eps")
+    plt.savefig("hbonds_paper.png")
 plt.show()
 
 
