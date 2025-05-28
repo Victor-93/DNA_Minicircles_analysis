@@ -1,6 +1,0 @@
-14/12/2024
-
-To select representative frames where the hbonds break really clearly, use the hbonds_visualization *pdf *py
-This ones have a higher threshold for finding the hbonds so you can select cases where the breaking is
-more obvious. So, based on those, select them.
-
