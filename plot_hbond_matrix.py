@@ -17,7 +17,7 @@ min_val = 4  # Any value below this will be 0 and above 1
 #enhance_res = True
 enhance_res = False
 
-showlabels = False # Indicate if you want to print labels
+showlabels = True # Indicate if you want to print labels
 
 if enhance_res:
     # Convolution kernel to expand 1s to neighboring rows
@@ -184,7 +184,7 @@ if enhance_res:
     plt.savefig("hbonds_paper_e.pdf")
     plt.savefig("hbonds_paper_e.png")
 else:
-    plt.savefig("hbonds_paper.eps")
+    plt.savefig("hbonds_paper.pdf")
     plt.savefig("hbonds_paper.png")
 plt.show()
 

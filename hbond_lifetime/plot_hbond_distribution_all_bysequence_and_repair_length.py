@@ -1,11 +1,6 @@
 import numpy as np
 import pandas as pd
-import seaborn as sns
-from scipy.ndimage import convolve
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-import matplotlib.gridspec as gridspec
-
 
 #Description
 # ----------------------------------------------------------------------------------
